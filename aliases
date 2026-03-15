@@ -1,0 +1,16 @@
+[alias]
+    st = status
+    poh = push origin HEAD
+    co = checkout
+    cm = commit
+    br = branch
+    d = diff
+    undo = reset --soft HEAD~1
+    up = "!f() { branch=$(git symbolic-ref --quiet --short HEAD) || exit 1; git checkout master && git pull && git checkout \"$branch\" && git merge --no-edit master; }; f"
+    ss = "!f() { if [ \"$#\" -eq 0 ]; then git stash push; else git stash push -m \"$*\"; fi; }; f"
+    sp = "!f() { if [ \"$#\" -eq 0 ]; then git stash pop; else git stash pop \"stash@{$1}\"; fi; }; f"
+    sd = "!f() { if [ \"$#\" -eq 0 ]; then printf 'Drop all stashes? [y/N] '; read answer; case \"$answer\" in y|Y) git stash clear ;; *) echo 'Aborted.' ;; esac; else git stash drop \"stash@{$1}\"; fi; }; f"
+    l = log
+    last = show HEAD
+    cp = cherry-pick
+    
