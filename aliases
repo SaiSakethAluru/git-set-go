@@ -1,5 +1,6 @@
 [alias]
-    st = status
+    # Inspect the aliases Git can see in the current context.
+    # Optionally pass a single alias name to look up just that one.
     alias = "!f() { \
         if [ \"$#\" -eq 0 ]; then \
             git config --get-regexp '^alias\\.' || echo 'No aliases found.'; \
@@ -12,33 +13,24 @@
             fi; \
         fi; \
     }; f"
-    poh = push origin HEAD
-    co = checkout
-    cm = commit
+
+    # Simple shortcuts for frequently used Git commands.
     br = branch
+    cm = commit
+    co = checkout
+    cp = cherry-pick
     d = diff
+    l = log
+    last = show HEAD
+    poh = push origin HEAD
+    st = status
+
+    # Drop the most recent commit while keeping all changes staged.
+    # This is useful when the commit should be redone but the work itself is fine.
     undo = reset --soft HEAD~1
-    up = "!f() { \
-        branch=$(git symbolic-ref --quiet --short HEAD) || exit 1; \
-        git checkout master && \
-        git pull && \
-        git checkout \"$branch\" && \
-        git merge --no-edit master; \
-    }; f"
-    ss = "!f() { \
-        if [ \"$#\" -eq 0 ]; then \
-            git stash push; \
-        else \
-            git stash push -m \"$*\"; \
-        fi; \
-    }; f"
-    sp = "!f() { \
-        if [ \"$#\" -eq 0 ]; then \
-            git stash pop; \
-        else \
-            git stash pop \"stash@{$1}\"; \
-        fi; \
-    }; f"
+
+    # Clear all stashes after an explicit y/n confirmation, or drop one stash by index.
+    # `git sd 2` removes `stash@{2}` directly without doing a full clear.
     sd = "!f() { \
         if [ \"$#\" -eq 0 ]; then \
             printf 'Drop all stashes? [y/N] '; \
@@ -51,7 +43,33 @@
             git stash drop \"stash@{$1}\"; \
         fi; \
     }; f"
-    l = log
-    last = show HEAD
-    cp = cherry-pick
-    
+
+    # Pop the latest stash by default, or pop a specific stash by numeric index.
+    # `git sp 2` applies and drops `stash@{2}`.
+    sp = "!f() { \
+        if [ \"$#\" -eq 0 ]; then \
+            git stash pop; \
+        else \
+            git stash pop \"stash@{$1}\"; \
+        fi; \
+    }; f"
+
+    # Stash current changes, optionally using the provided arguments as the stash message.
+    # `git ss` uses Git's default message, while `git ss my_msg` stores a custom one.
+    ss = "!f() { \
+        if [ \"$#\" -eq 0 ]; then \
+            git stash push; \
+        else \
+            git stash push -m \"$*\"; \
+        fi; \
+    }; f"
+
+    # Update your current branch from master without leaving you on master.
+    # It pulls master, returns to the original branch, and merges using --no-edit.
+    up = "!f() { \
+        branch=$(git symbolic-ref --quiet --short HEAD) || exit 1; \
+        git checkout master && \
+        git pull && \
+        git checkout \"$branch\" && \
+        git merge --no-edit master; \
+    }; f"
