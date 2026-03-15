@@ -64,12 +64,41 @@
         fi; \
     }; f"
 
-    # Update your current branch from master without leaving you on master.
-    # It pulls master, returns to the original branch, and merges using --no-edit.
+    # Update your current branch from its upstream remote's default branch when available.
+    # Falls back safely when needed, then merges with --no-edit after returning to your branch.
     up = "!f() { \
         branch=$(git symbolic-ref --quiet --short HEAD) || exit 1; \
-        git checkout master && \
-        git pull && \
+        remote=$(git config --get \"branch.$branch.remote\" || true); \
+        if [ -z \"$remote\" ]; then \
+            remotes=$(git remote); \
+            set -- $remotes; \
+            if [ \"$#\" -eq 1 ]; then \
+                remote=$1; \
+            elif [ \"$#\" -gt 1 ]; then \
+                echo 'No upstream remote configured for the current branch.' >&2; \
+                echo 'Set an upstream or use a repo with a single remote.' >&2; \
+                exit 1; \
+            fi; \
+        fi; \
+        default_branch=''; \
+        if [ -n \"$remote\" ]; then \
+            remote_head=$(git symbolic-ref --quiet --short \"refs/remotes/$remote/HEAD\" 2>/dev/null || true); \
+            if [ -n \"$remote_head\" ]; then \
+                default_branch=${remote_head#\"$remote/\"}; \
+            fi; \
+        fi; \
+        if [ -z \"$default_branch\" ]; then \
+            if git show-ref --verify --quiet refs/heads/main; then \
+                default_branch=main; \
+            elif git show-ref --verify --quiet refs/heads/master; then \
+                default_branch=master; \
+            else \
+                echo 'Could not determine the default branch for update.' >&2; \
+                exit 1; \
+            fi; \
+        fi; \
+        git checkout \"$default_branch\" && \
+        git pull ${remote:+\"$remote\"} \"$default_branch\" && \
         git checkout \"$branch\" && \
-        git merge --no-edit master; \
+        git merge --no-edit \"$default_branch\"; \
     }; f"

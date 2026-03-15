@@ -33,7 +33,7 @@ The repo currently includes:
 - `git br` -> `git branch`
 - `git d` -> `git diff`
 - `git undo` -> undo the last commit while keeping the changes staged
-- `git up` -> checkout `master`, pull, return to your original branch, then merge `master` with the default merge message
+- `git up` -> detect the current branch's upstream remote and its default branch, pull it, return to your branch, then merge with the default merge message
 - `git ss [message]` -> stash changes, optionally with a custom message
 - `git sp [index]` -> pop the latest stash or a specific stash index such as `git sp 2`
 - `git sd [index]` -> clear all stashes after confirmation, or drop a specific stash index such as `git sd 2`
@@ -41,4 +41,4 @@ The repo currently includes:
 - `git last` -> `git show HEAD`
 - `git cp` -> `git cherry-pick`
 
-`git up` intentionally assumes your primary branch is named `master`, since that is the workflow encoded in the alias.
+`git up` prefers the current branch's upstream remote and that remote's default branch. If that cannot be determined, it falls back to local `main` and then `master`.
