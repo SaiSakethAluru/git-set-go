@@ -1,5 +1,6 @@
 [alias]
     st = status
+    alias = "!f() { if [ \"$#\" -eq 0 ]; then git config --get-regexp '^alias\\.' || echo 'No aliases found.'; else value=$(git config --get \"alias.$1\" || true); if [ -n \"$value\" ]; then printf 'alias.%s=%s\\n' \"$1\" \"$value\"; else echo \"No alias named '$1' found.\"; fi; fi; }; f"
     poh = push origin HEAD
     co = checkout
     cm = commit

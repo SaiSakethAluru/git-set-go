@@ -26,6 +26,7 @@ To remove it later:
 
 The repo currently includes:
 
+- `git alias [name]` -> list all effective aliases in the current context, or show one alias by name
 - `git st` -> `git status`
 - `git poh` -> `git push origin HEAD`
 - `git co` -> `git checkout`
