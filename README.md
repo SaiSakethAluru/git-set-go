@@ -13,8 +13,8 @@ Clone it once, run setup, and your Git muscle memory is ready to go. 🚀
 ## Why this repo exists
 
 New machines are annoying.
-Re-typing favorite aliases is annoying.
-Forgetting whether this laptop has your Git name/email configured is also annoying.
+Re-adding favorite aliases is annoying.
+Forgetting whether this laptop has your Git name/email/aliases configured is also annoying.
 
 This repo fixes that with a small, reusable setup that keeps the alias definitions in version control and easy to evolve over time.
 
